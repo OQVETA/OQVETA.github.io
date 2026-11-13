@@ -6,21 +6,21 @@
     "keywords": {
       "ja": [
         "OQVETA",
-        "個人ブログ",
-        "日々の記録",
-        "読書",
-        "学び"
+        "リリースログ",
+        "更新情報",
+        "開発ログ",
+        "サイト更新"
       ],
       "en": [
         "OQVETA",
-        "personal blog",
-        "notes",
-        "reading"
+        "release notes",
+        "changelog",
+        "site updates"
       ],
       "es": [
         "OQVETA",
-        "blog personal",
-        "notas"
+        "notas de lanzamiento",
+        "actualizaciones"
       ]
     }
   },
