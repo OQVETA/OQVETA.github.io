@@ -1,32 +1,37 @@
 {
   "site": {
-    "name": "Grimorio",
-    "logoText": "Grimorio",
+    "name": "OQVETA",
+    "logoText": "OQVETA",
     "favicon": "/favicon.ico",
     "keywords": {
-      "es": [
-        "Grimorio",
-        "plantilla Astro",
-        "blog de seguridad",
-        "seguridad ofensiva",
-        "Hack The Box"
+      "ja": [
+        "OQVETA",
+        "個人ブログ",
+        "日々の記録",
+        "読書",
+        "学び"
       ],
       "en": [
-        "Grimorio",
-        "Astro theme",
-        "security blog",
-        "offensive security",
-        "Hack The Box"
+        "OQVETA",
+        "personal blog",
+        "notes",
+        "reading"
+      ],
+      "es": [
+        "OQVETA",
+        "blog personal",
+        "notas"
       ]
     }
   },
   "author": {
     "name": {
-      "es": "Grimorio",
-      "en": "Grimorio"
+      "ja": "匿名",
+      "en": "Anonymous",
+      "es": "Anónimo"
     },
-    "handle": "Grimorio",
-    "github": "https://github.com/sud0pls/Grimorio-astro"
+    "handle": "anonymous",
+    "github": ""
   },
   "navigation": [
     {
@@ -48,12 +53,6 @@
   ],
   "socialLinks": [
     {
-      "name": "GitHub",
-      "label": "",
-      "icon": "icon-[simple-icons--github]",
-      "url": "$author.github"
-    },
-    {
       "name": "RSS",
       "label": "common.rss",
       "icon": "icon-[lucide--rss]",
@@ -61,7 +60,8 @@
     }
   ],
   "text": {
-    "es": {},
-    "en": {}
+    "ja": {},
+    "en": {},
+    "es": {}
   }
 }
