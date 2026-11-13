@@ -1,20 +1,20 @@
 {
-  "name": "grimorio",
+  "name": "oqveta",
   "type": "module",
   "version": "1.0.0",
-  "description": "A fast, bilingual blog theme for Astro: guides, notes, essays, or a dev log.",
+  "description": "OQVETA — 匿名の個人ブログ",
   "license": "MIT",
-  "homepage": "https://grimorio-astro.pages.dev",
+  "homepage": "https://oqveta.github.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sud0pls/Grimorio-astro.git"
+    "url": "https://github.com/OQVETA/OQVETA.github.io.git"
   },
   "keywords": [
+    "personal-blog",
     "astro",
-    "astro-theme",
-    "blog",
-    "bilingual",
-    "i18n",
+    "japanese",
+    "reading",
+    "notes",
     "vue",
     "tailwindcss"
   ],
