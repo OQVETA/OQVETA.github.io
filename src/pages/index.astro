@@ -136,19 +136,6 @@ const copy = lang === "ja"
 </BaseLayout>
 
 <style>
-  :global(html) { background: #080b12; }
-  :global(body) { background: #080b12; color: #edf1f7; }
-  :global(.nav-header) { background: rgba(8,11,18,.78); border-color: rgba(180,198,224,.12); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); }
-  :global(.nav-header .brand) { color: #f1f4fa; letter-spacing: .12em; }
-  :global(.nav-header nav a) { color: #8994a8; }
-  :global(.nav-header nav a:hover), :global(.nav-header nav a.active) { color: #f1f4fa; }
-  :global(.nav-header nav a.active) { border-color: #9ab8ed; }
-  :global(.nav-header .search-trigger) { background: rgba(255,255,255,.035); border-color: rgba(180,198,224,.14); color: #9ca8ba; }
-  :global(.nav-header .icon-button) { color: #9ca8ba; }
-  :global(.nav-header .icon-button:hover) { border-color: rgba(180,198,224,.22); color: #fff; }
-  :global(.site-footer) { background: #080b12; border-color: rgba(180,198,224,.12); color: #7f8a9e; }
-  :global(.site-footer a:hover) { color: #dce8ff; }
-  :global(.back-top) { background: rgba(14,20,32,.85); border-color: rgba(180,198,224,.2); color: #c7d4e8; }
   .oq-home { --pointer-x: 50%; --pointer-y: 340px; position: relative; isolation: isolate; overflow: clip; background: radial-gradient(ellipse at 50% 0%, #111c32 0%, #0a101d 38%, #080b12 76%); color: #edf1f7; padding-bottom: 18px; }
   .oq-home::before { content:""; position:absolute; inset:0; z-index:-1; pointer-events:none; opacity:.22; background-image:linear-gradient(rgba(162,185,222,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(162,185,222,.055) 1px,transparent 1px); background-size:64px 64px; mask-image:linear-gradient(to bottom,black,transparent 82%); }
   .oq-home::after { content:""; position:absolute; z-index:-1; width:520px; height:520px; left:var(--pointer-x); top:var(--pointer-y); transform:translate(-50%,-50%); background:radial-gradient(circle,rgba(92,135,207,.10),transparent 68%); pointer-events:none; transition:opacity .3s; }
