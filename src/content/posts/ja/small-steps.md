@@ -3,7 +3,7 @@ title: "小さく続けることの難しさ"
 description: "大きな目標を立てることより、毎日の小さな行動を続けることのほうが難しいと感じる理由。"
 date: 2026-11-10
 lang: ja
-category: notes
+category: guides
 tags: ["習慣", "考えごと"]
 featured: false
 ---
