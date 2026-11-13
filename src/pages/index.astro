@@ -124,7 +124,6 @@ const copy = lang === "ja"
     } else {
       document.querySelectorAll("[data-reveal]").forEach((el) => el.classList.add("is-visible"));
     }
-    const root = document.querySelector(".oq-home");
     let frame = 0;
     const pointerRoot = document.querySelector<HTMLElement>(".oq-home");
     pointerRoot?.addEventListener("pointermove", (event: PointerEvent) => {
