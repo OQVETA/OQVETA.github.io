@@ -36,12 +36,17 @@ test("Search finds the launch release", async ({ page }) => {
   await expect(dialog).not.toBeVisible();
 });
 
-test("Release article content and reading progress", async ({ page }) => {
+test("Release article content and reading progress", async ({ page, isMobile }) => {
   await page.goto("/posts/2026-11-13-launch/");
   await expect(page.locator(".article-header h1")).toContainText("OQVETAを公開しました");
   await expect(page.locator("#article-body h2")).toHaveCount(2);
   await expect(page.locator("#article-body h3")).toHaveCount(4);
-  await page.locator(".toc a").last().click();
+  if (isMobile) {
+    await page.locator(".mobile-toc summary").click();
+    await page.locator(".mobile-toc a").last().click();
+  } else {
+    await page.locator(".toc a").last().click();
+  }
   await expect(page).toHaveURL(/#/);
   await expect(page.locator("#reading-progress")).not.toHaveAttribute("style", "width: 0%;");
 });
