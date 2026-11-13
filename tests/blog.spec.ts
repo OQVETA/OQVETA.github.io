@@ -33,8 +33,8 @@ test("Tags, month archives, and an unknown category", async ({ page }) => {
   await page.goto("/posts/?tag=読書");
   await expect(page.locator(".post-card")).toHaveCount(1);
   await page.goto("/posts/?month=2026-11");
-  await expect(page.locator(".post-card")).toHaveCount(2);
-  await expect(page.locator(".filter-summary")).toContainText("2026-03");
+  await expect(page.locator(".post-card")).toHaveCount(3);
+  await expect(page.locator(".filter-summary")).toContainText("2026-11");
   await page.goto("/posts/?category=missing&page=-5");
   await expect(page.getByText(t("post.emptyTitle"))).toBeVisible();
   await page.getByRole("button", { name: t("post.viewAll") }).click();
