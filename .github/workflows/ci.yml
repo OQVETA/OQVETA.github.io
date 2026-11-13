@@ -23,7 +23,7 @@ jobs:
       - run: pnpm audit --audit-level=high
       - run: pnpm build
         env:
-          SITE_URL: https://grimorio-astro.pages.dev
+          SITE_URL: https://oqveta.github.io
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e
       - uses: actions/upload-artifact@v7.0.2
