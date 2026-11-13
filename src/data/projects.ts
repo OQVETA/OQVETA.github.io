@@ -9,20 +9,20 @@ export interface Project {
   status: string;
 }
 
-// Example projects. Replace these with your own, or remove the "Projects"
-// entry from navigation in src/site.config.json if you don't need the page.
 export function getProjects(lang: Language): Project[] {
-  const es = lang === "es";
+  const ja = lang === "ja";
   return [
     {
-      name: "Grimorio",
-      description: es
-        ? "La plantilla de blog con la que está hecho este sitio: Astro, bilingüe y centrada en el contenido."
-        : "The blog template this site is built with: Astro, bilingual, and content-first.",
-      url: "https://github.com/sud0pls/Grimorio-astro",
-      icon: "icon-[simple-icons--astro]",
-      tech: ["Astro", "Vue", "TypeScript"],
-      status: es ? "Plantilla de ejemplo" : "Example project",
+      name: ja ? "小さな実験" : lang === "es" ? "Pequeños experimentos" : "Small experiments",
+      description: ja
+        ? "興味を持ったことを、少しずつ形にしていくための個人的な試み。"
+        : lang === "es"
+          ? "Pequeños proyectos personales para explorar ideas."
+          : "Personal experiments for exploring ideas.",
+      url: "/about/",
+      icon: "icon-[lucide--flask-conical]",
+      tech: [],
+      status: ja ? "のんびり更新中" : lang === "es" ? "En progreso" : "In progress",
     },
   ];
 }
