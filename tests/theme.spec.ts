@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { useTranslations } from "../src/i18n";
 
-const t = useTranslations("en");
+const t = useTranslations("ja");
 
 for (const reducedMotion of ["no-preference", "reduce"] as const) {
   for (const path of ["/", "/posts/"]) {
