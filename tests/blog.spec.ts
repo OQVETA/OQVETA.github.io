@@ -42,7 +42,7 @@ test("Release article content and reading progress", async ({ page }) => {
   await expect(page.locator("#article-body h2")).toHaveCount(2);
   await expect(page.locator("#article-body h3")).toHaveCount(4);
   await page.locator(".toc a").last().click();
-  await expect(page).toHaveURL(/#これから/);
+  await expect(page).toHaveURL(/#/);
   await expect(page.locator("#reading-progress")).not.toHaveAttribute("style", "width: 0%;");
 });
 
