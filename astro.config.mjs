@@ -62,7 +62,7 @@ export default defineConfig({
   integrations: [
     vue(),
     sitemap({
-      i18n: { defaultLocale: "ja-JP", locales: { ja: "ja-JP", en: "en-US", es: "es-ES" } },
+      i18n: { defaultLocale: "ja", locales: { ja: "ja-JP", en: "en-US", es: "es-ES" } },
       filter: (page) =>
         !["/404/", "/404.html"].includes(new URL(page).pathname),
       serialize(item) {
