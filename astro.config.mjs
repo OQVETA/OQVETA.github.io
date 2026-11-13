@@ -3,7 +3,7 @@ import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import vue from "@astrojs/vue";
 import tailwindcss from "@tailwindcss/vite";
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { loadEnv } from "vite";
 
 const { SITE_URL = "https://oqveta.github.io" } = loadEnv(
@@ -29,6 +29,7 @@ if (
 const lastModified = new Map();
 for (const lang of ["ja", "en", "es"]) {
   const dir = `./src/content/posts/${lang}`;
+  if (!existsSync(dir)) continue;
   for (const file of readdirSync(dir).filter((name) => name.endsWith(".md"))) {
     const frontmatter = readFileSync(`${dir}/${file}`, "utf8").split("---")[1];
     if (/^draft:\s*true/m.test(frontmatter)) continue;
