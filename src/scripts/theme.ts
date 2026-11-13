@@ -8,9 +8,7 @@ function getInitialTheme(): Theme {
   } catch {
     /* Allow theme switching when browser storage is blocked. */
   }
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+  return "dark";
 }
 function applyTheme(theme: Theme) {
   const root = document.documentElement;
