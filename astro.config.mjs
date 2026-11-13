@@ -6,7 +6,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { readdirSync, readFileSync } from "node:fs";
 import { loadEnv } from "vite";
 
-const { SITE_URL = "https://grimorio-astro.pages.dev" } = loadEnv(
+const { SITE_URL = "https://oqveta.github.io" } = loadEnv(
   process.env.NODE_ENV ?? "production",
   process.cwd(),
   "SITE_URL",
@@ -25,11 +25,9 @@ if (
   );
 }
 
-// Last modification date of each post URL, read from its frontmatter, so the
-// sitemap can tell search engines which pages changed.
 /** @type {Map<string, Date>} */
 const lastModified = new Map();
-for (const lang of ["es", "en"]) {
+for (const lang of ["ja", "en", "es"]) {
   const dir = `./src/content/posts/${lang}`;
   for (const file of readdirSync(dir).filter((name) => name.endsWith(".md"))) {
     const frontmatter = readFileSync(`${dir}/${file}`, "utf8").split("---")[1];
@@ -38,47 +36,40 @@ for (const lang of ["es", "en"]) {
       /^updated:\s*(\S+)/m.exec(frontmatter)?.[1] ??
       /^date:\s*(\S+)/m.exec(frontmatter)?.[1];
     if (!date) continue;
-    const prefix = lang === "en" ? "" : `/${lang}`;
+    const prefix = lang === "ja" ? "" : `/${lang}`;
     lastModified.set(
       `${prefix}/posts/${file.replace(/\.md$/, "")}/`,
       new Date(date),
     );
   }
 }
-/** Newest post date for the English ("") or Spanish ("/es/") listings. */
 const newest = (/** @type {string} */ prefix) =>
   [...lastModified]
     .filter(([path]) =>
-      prefix ? path.startsWith(prefix) : !path.startsWith("/es/"),
+      prefix ? path.startsWith(prefix) : !path.startsWith("/en/") && !path.startsWith("/es/"),
     )
     .map(([, date]) => date)
     .sort((a, b) => b.valueOf() - a.valueOf())[0];
 
-// https://astro.build/config
 export default defineConfig({
   site: site.href,
   output: "static",
   trailingSlash: "always",
-  // Preserve the spacing between inline elements when migrating from Astro 5.
   compressHTML: true,
-  // Inline the small stylesheet to avoid a render-blocking request.
   build: { inlineStylesheets: "always" },
-  // Fetch pages on hover so navigation feels instant.
   prefetch: { prefetchAll: true, defaultStrategy: "hover" },
-  // Prerender prefetched pages with the Speculation Rules API where supported.
   experimental: { clientPrerender: true },
   integrations: [
     vue(),
     sitemap({
-      // Link each page to its translation for search engines.
-      i18n: { defaultLocale: "en", locales: { es: "es-ES", en: "en-US" } },
+      i18n: { defaultLocale: "ja-JP", locales: { ja: "ja-JP", en: "en-US", es: "es-ES" } },
       filter: (page) =>
         !["/404/", "/404.html"].includes(new URL(page).pathname),
       serialize(item) {
         const path = new URL(item.url).pathname;
-        const listing = /^\/(es\/)?(posts\/)?$/.exec(path);
+        const listing = /^\/(?:(en|es)\/)?(posts\/)?$/.exec(path);
         const date = listing
-          ? newest(listing[1] ? "/es/" : "")
+          ? newest(listing[1] ? `/${listing[1]}/` : "")
           : lastModified.get(path);
         return date ? { ...item, lastmod: date.toISOString() } : item;
       },
