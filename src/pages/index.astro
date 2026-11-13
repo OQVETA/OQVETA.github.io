@@ -1,0 +1,254 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getLanguageFromPath, localizePath } from "../i18n";
+import { getPosts, summarize } from "../lib/posts";
+
+const lang = getLanguageFromPath(Astro.url.pathname);
+const allPosts = (await getPosts(lang)).map(summarize);
+const featured = allPosts.find((post) => post.featured) ?? allPosts[0];
+const latest = allPosts.filter((post) => post.id !== featured?.id).slice(0, 3);
+const dateLabel = (date: string) =>
+  new Intl.DateTimeFormat(lang === "ja" ? "ja-JP" : lang === "es" ? "es-ES" : "en-US", {
+    year: "numeric", month: "short", day: "numeric",
+  }).format(new Date(date));
+const postUrl = (id: string) => localizePath(lang, `/posts/${id}/`);
+const postsUrl = localizePath(lang, "/posts/");
+const projectsUrl = localizePath(lang, "/projects/");
+const aboutUrl = localizePath(lang, "/about/");
+const copy = lang === "ja"
+  ? { eyebrow: "INDEPENDENT DIGITAL JOURNAL", title: "思考を、記録する。", lead: "日々の発見、つくること、考えること。\n小さな変化を、ひとつずつ言葉にして残す。", explore: "記事を読む", about: "OQVETAについて", latest: "LATEST STORIES", latestTitle: "新しい記録", all: "すべての記事", featured: "FEATURED", journal: "THE JOURNAL", journalText: "好奇心の向く先へ。", journalSub: "学び、デザイン、テクノロジー、日々の気づきを静かに記録する場所。", projects: "SELECTED WORK", projectsTitle: "つくったもの", projectsText: "アイデアを、動くかたちへ。", openProjects: "制作物を見る", empty: "記事はまだありません。最初の記録を準備中です。", min: "分で読める" }
+  : lang === "es"
+  ? { eyebrow: "INDEPENDENT DIGITAL JOURNAL", title: "Ideas, en registro.", lead: "Observaciones, creación y pensamiento.\nUn lugar para conservar cada pequeño cambio.", explore: "Leer artículos", about: "Acerca de OQVETA", latest: "LATEST STORIES", latestTitle: "Entradas recientes", all: "Ver todos", featured: "FEATURED", journal: "THE JOURNAL", journalText: "Seguir la curiosidad.", journalSub: "Un espacio para escribir sobre aprendizaje, diseño, tecnología y la vida cotidiana.", projects: "SELECTED WORK", projectsTitle: "Proyectos", projectsText: "Convertir ideas en experiencias.", openProjects: "Ver proyectos", empty: "Todavía no hay artículos.", min: "min de lectura" }
+  : { eyebrow: "INDEPENDENT DIGITAL JOURNAL", title: "Ideas, in progress.", lead: "Notes on making, learning, and noticing.\nA quiet space to keep the things worth remembering.", explore: "Explore stories", about: "About OQVETA", latest: "LATEST STORIES", latestTitle: "Recent writing", all: "All stories", featured: "FEATURED", journal: "THE JOURNAL", journalText: "Follow what feels interesting.", journalSub: "A personal archive of learning, design, technology, and everyday observations.", projects: "SELECTED WORK", projectsTitle: "Things in the making", projectsText: "Turning small ideas into real experiences.", openProjects: "Explore projects", empty: "No stories yet.", min: "min read" };
+---
+<BaseLayout
+  title={lang === "ja" ? "ホーム" : "Home"}
+  description={lang === "ja" ? "思考と日々の発見を記録する、OQVETAの個人デジタルジャーナル。" : "An independent digital journal for ideas, making, and everyday discoveries."}
+  heroTitle={copy.title}
+  pageType="CollectionPage"
+>
+  <div class="oq-home">
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
+    <section class="hero shell">
+      <div class="hero-copy" data-reveal>
+        <div class="eyebrow"><span class="pulse"></span>{copy.eyebrow}</div>
+        <h1>{copy.title}<span class="hero-period">.</span></h1>
+        <p class="hero-lead">{copy.lead}</p>
+        <div class="hero-actions">
+          <a class="action-primary" href={postsUrl}>{copy.explore}<span class="icon-[lucide--arrow-up-right]"></span></a>
+          <a class="action-quiet" href={aboutUrl}>{copy.about}<span class="icon-[lucide--arrow-right]"></span></a>
+        </div>
+        <div class="hero-index"><span>01</span><i></i><span>AN OPEN NOTEBOOK</span></div>
+      </div>
+      <div class="hero-art" aria-label="Abstract orbital artwork" data-reveal>
+        <div class="art-grid"></div>
+        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="orbit orbit-c"></div>
+        <div class="core"><span>O</span><small>Q / 01</small></div>
+        <span class="art-coordinate coordinate-a">35° 41' N</span>
+        <span class="art-coordinate coordinate-b">139° 41' E</span>
+        <span class="art-caption">A STUDY OF EVERYTHING</span>
+      </div>
+    </section>
+
+    <section class="feature-wrap shell" aria-label={copy.featured}>
+      <div class="section-kicker"><span>{copy.featured}</span><span class="kicker-line"></span><span>01 / 03</span></div>
+      {featured ? (
+        <a class="feature-card" href={postUrl(featured.id)} data-reveal>
+          <div class="feature-visual">
+            {featured.cover ? <img src={featured.cover} alt="" loading="lazy" /> : <div class="feature-art"><div class="feature-ring"></div><div class="feature-cross"></div><span>OQVETA<br/>FIELD NOTES</span></div>}
+            <span class="visual-index">OQ—001</span>
+            <span class="visual-arrow"><span class="icon-[lucide--arrow-up-right]"></span></span>
+          </div>
+          <div class="feature-content">
+            <div class="feature-meta"><span>{featured.category}</span><span>{dateLabel(featured.date)}</span></div>
+            <h2>{featured.title}</h2>
+            <p>{featured.description}</p>
+            <div class="feature-bottom"><span>{featured.minutes} {copy.min}</span><span class="read-link">{copy.explore}<span class="icon-[lucide--arrow-right]"></span></span></div>
+          </div>
+        </a>
+      ) : (
+        <div class="feature-card empty-feature"><div class="feature-art"><div class="feature-ring"></div><span>OQVETA<br/>FIELD NOTES</span></div><div class="feature-content"><span class="feature-meta">{copy.featured}</span><h2>{copy.empty}</h2></div></div>
+      )}
+    </section>
+
+    <section class="latest-section shell">
+      <div class="section-heading" data-reveal>
+        <div><div class="section-kicker"><span>{copy.latest}</span></div><h2>{copy.latestTitle}<span>.</span></h2></div>
+        <a class="all-link" href={postsUrl}>{copy.all}<span class="icon-[lucide--arrow-up-right]"></span></a>
+      </div>
+      {latest.length > 0 ? (
+        <div class="story-grid">
+          {latest.map((post, index) => (
+            <a class="story-card" href={postUrl(post.id)} data-reveal>
+              <div class="story-top"><span>0{index + 2}</span><span>{dateLabel(post.date)}</span></div>
+              <div class="story-mark"><span class="icon-[lucide--move-up-right]"></span></div>
+              <div class="story-body"><span class="story-category">{post.category}</span><h3>{post.title}</h3><p>{post.description}</p><div class="story-footer"><span>{post.minutes} {copy.min}</span><span class="story-tags">{post.tags.slice(0, 2).join(" · ")}</span></div></div>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="quiet-empty">{allPosts.length === 0 ? copy.empty : copy.latestTitle}</div>
+      )}
+    </section>
+
+    <section class="closing-grid shell">
+      <a class="journal-tile" href={aboutUrl} data-reveal>
+        <div class="tile-top"><span>{copy.journal}</span><span>↗</span></div>
+        <div class="journal-symbol"><span>O</span><i></i><i></i><i></i></div>
+        <div><h2>{copy.journalText}</h2><p>{copy.journalSub}</p></div>
+      </a>
+      <a class="project-tile" href={projectsUrl} data-reveal>
+        <div class="tile-top"><span>{copy.projects}</span><span>02 / 02</span></div>
+        <div class="project-lines"><i></i><i></i><i></i><i></i><i></i></div>
+        <div><h2>{copy.projectsTitle}</h2><p>{copy.projectsText}</p><span class="tile-link">{copy.openProjects}<span class="icon-[lucide--arrow-up-right]"></span></span></div>
+      </a>
+    </section>
+    <div class="home-end shell"><span>OQVETA / PERSONAL ARCHIVE</span><span>MADE OF CURIOSITY <i>✳</i></span></div>
+  </div>
+  <script>
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduced && "IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      document.querySelectorAll("[data-reveal]").forEach((el) => observer.observe(el));
+    } else {
+      document.querySelectorAll("[data-reveal]").forEach((el) => el.classList.add("is-visible"));
+    }
+    const root = document.querySelector(".oq-home");
+    let frame = 0;
+    root?.addEventListener("pointermove", (event) => {
+      if (reduced || event.pointerType === "touch") return;
+      if (frame) cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const rect = root.getBoundingClientRect();
+        root.style.setProperty("--pointer-x", `${event.clientX - rect.left}px`);
+        root.style.setProperty("--pointer-y", `${event.clientY - rect.top + window.scrollY}px`);
+      });
+    }, { passive: true });
+  </script>
+</BaseLayout>
+
+<style>
+  :global(html) { background: #080b12; }
+  :global(body) { background: #080b12; color: #edf1f7; }
+  :global(.nav-header) { background: rgba(8,11,18,.78); border-color: rgba(180,198,224,.12); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); }
+  :global(.nav-header .brand) { color: #f1f4fa; letter-spacing: .12em; }
+  :global(.nav-header nav a) { color: #8994a8; }
+  :global(.nav-header nav a:hover), :global(.nav-header nav a.active) { color: #f1f4fa; }
+  :global(.nav-header nav a.active) { border-color: #9ab8ed; }
+  :global(.nav-header .search-trigger) { background: rgba(255,255,255,.035); border-color: rgba(180,198,224,.14); color: #9ca8ba; }
+  :global(.nav-header .icon-button) { color: #9ca8ba; }
+  :global(.nav-header .icon-button:hover) { border-color: rgba(180,198,224,.22); color: #fff; }
+  :global(.site-footer) { background: #080b12; border-color: rgba(180,198,224,.12); color: #7f8a9e; }
+  :global(.site-footer a:hover) { color: #dce8ff; }
+  :global(.back-top) { background: rgba(14,20,32,.85); border-color: rgba(180,198,224,.2); color: #c7d4e8; }
+  .oq-home { --pointer-x: 50%; --pointer-y: 340px; position: relative; isolation: isolate; overflow: clip; background: radial-gradient(ellipse at 50% 0%, #111c32 0%, #0a101d 38%, #080b12 76%); color: #edf1f7; padding-bottom: 18px; }
+  .oq-home::before { content:""; position:absolute; inset:0; z-index:-1; pointer-events:none; opacity:.22; background-image:linear-gradient(rgba(162,185,222,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(162,185,222,.055) 1px,transparent 1px); background-size:64px 64px; mask-image:linear-gradient(to bottom,black,transparent 82%); }
+  .oq-home::after { content:""; position:absolute; z-index:-1; width:520px; height:520px; left:var(--pointer-x); top:var(--pointer-y); transform:translate(-50%,-50%); background:radial-gradient(circle,rgba(92,135,207,.10),transparent 68%); pointer-events:none; transition:opacity .3s; }
+  .ambient { position:absolute; z-index:-1; border-radius:50%; filter:blur(1px); pointer-events:none; }
+  .ambient-one { width:360px;height:360px;top:20px;left:-230px;background:radial-gradient(circle,rgba(61,106,183,.13),transparent 70%); }
+  .ambient-two { width:460px;height:460px;top:620px;right:-310px;background:radial-gradient(circle,rgba(91,70,151,.11),transparent 70%); }
+  .shell { max-width:1200px; }
+  .hero { min-height:620px; display:grid; grid-template-columns:1.08fr .92fr; align-items:center; gap:54px; padding-top:78px; padding-bottom:80px; }
+  .hero-copy { position:relative; z-index:1; }
+  .eyebrow,.section-kicker,.tile-top { display:flex; align-items:center; gap:12px; color:#9aabc5; font:500 10px/1.5 "IBM Plex Mono",monospace; letter-spacing:.17em; }
+  .pulse { width:7px;height:7px;border-radius:50%;background:#91b9ff;box-shadow:0 0 16px #75a8ff; }
+  .hero h1 { margin:30px 0 22px; max-width:680px; color:#f2f5fb; font-size:clamp(58px,7.3vw,104px); line-height:1.04; font-weight:500; letter-spacing:-.075em; }
+  .hero-period,.section-heading h2 span { color:#91b6f2; }
+  .hero-lead { white-space:pre-line; color:#a4afc1; font-size:clamp(15px,1.5vw,18px); line-height:2.05; letter-spacing:.025em; }
+  .hero-actions { display:flex; align-items:center; gap:26px; margin-top:34px; }
+  .action-primary,.action-quiet,.all-link,.tile-link { display:inline-flex; align-items:center; gap:12px; font-size:13px; }
+  .action-primary { padding:13px 18px; border:1px solid rgba(163,190,235,.38); background:linear-gradient(135deg,rgba(115,154,218,.2),rgba(61,90,139,.12)); border-radius:4px; color:#e9f1ff; }
+  .action-primary:hover { transform:translateY(-2px); border-color:#9bbcf1; background:rgba(110,151,217,.24); }
+  .action-quiet { color:#a4b0c3; }
+  .action-quiet:hover,.all-link:hover { color:#dce8ff; }
+  .hero-index { display:flex; align-items:center; gap:12px; margin-top:70px; color:#65748b; font:10px "IBM Plex Mono",monospace; letter-spacing:.13em; }
+  .hero-index span:first-child { color:#9db9e7; }
+  .hero-index i { width:38px;height:1px;background:#40516b; }
+  .hero-art { position:relative; height:440px; display:grid; place-items:center; overflow:hidden; }
+  .art-grid { position:absolute; inset:8%; border:1px solid rgba(153,179,219,.13); border-radius:50%; background:radial-gradient(circle at center,rgba(80,119,183,.14),transparent 60%); }
+  .orbit { position:absolute; width:76%;height:76%; border:1px solid rgba(159,190,240,.2);border-radius:50%; transform:rotate(-28deg) scaleY(.52); }
+  .orbit-a { animation:orbit 24s linear infinite; }
+  .orbit-b { width:90%;height:90%;transform:rotate(42deg) scaleY(.38);border-color:rgba(119,158,219,.22);animation:orbit 30s linear infinite reverse; }
+  .orbit-c { width:58%;height:58%;transform:rotate(82deg) scaleY(.7);border-color:rgba(172,193,227,.16); }
+  .core { width:118px;height:118px;display:grid;place-items:center;position:relative;border:1px solid rgba(180,207,249,.5);border-radius:50%;background:radial-gradient(circle at 35% 28%,#253c61,#101b30 70%);box-shadow:0 0 80px rgba(89,136,208,.24),inset 0 0 24px rgba(171,200,246,.12); }
+  .core span { font:300 48px/1 "IBM Plex Sans",sans-serif;color:#dce9ff;letter-spacing:-.1em; }
+  .core small { position:absolute;bottom:-27px;color:#7185a5;font:9px "IBM Plex Mono",monospace;letter-spacing:.18em; }
+  .art-coordinate,.art-caption { position:absolute;color:#70819d;font:9px "IBM Plex Mono",monospace;letter-spacing:.14em; }
+  .coordinate-a { top:16%;left:4%; }.coordinate-b { bottom:18%;right:2%; }.art-caption { bottom:3%;left:50%;transform:translateX(-50%);white-space:nowrap; }
+  .feature-wrap { padding-top:10px; }
+  .section-kicker { margin-bottom:18px; }
+  .section-kicker>span:first-child { color:#9db9e7; }
+  .kicker-line { width:52px;height:1px;background:rgba(153,179,219,.28); }
+  .section-kicker>span:last-child { color:#63738d; }
+  .feature-card { display:grid;grid-template-columns:1.08fr .92fr;min-height:320px;border:1px solid rgba(160,184,222,.16);background:linear-gradient(120deg,rgba(23,34,54,.88),rgba(13,20,33,.88));border-radius:8px;overflow:hidden;transition:border-color .3s,transform .3s,box-shadow .3s; }
+  .feature-card:hover { transform:translateY(-4px);border-color:rgba(154,188,241,.45);box-shadow:0 24px 80px rgba(0,0,0,.2); }
+  .feature-visual { min-height:320px;position:relative;overflow:hidden;background:#101a2a; }
+  .feature-visual img { width:100%;height:100%;min-height:320px;object-fit:cover;opacity:.72;filter:saturate(.65);transition:transform .7s,opacity .5s; }
+  .feature-card:hover .feature-visual img { transform:scale(1.04);opacity:.9; }
+  .feature-art { position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse at 52% 48%,#293f61 0%,#17243b 38%,#101827 78%); }
+  .feature-art::before,.feature-art::after { content:"";position:absolute;width:75%;aspect-ratio:1;border:1px solid rgba(169,198,242,.23);border-radius:50%;transform:rotate(-35deg) scaleY(.48); }
+  .feature-art::after { width:94%;transform:rotate(50deg) scaleY(.35);border-color:rgba(169,198,242,.12); }
+  .feature-ring { position:absolute;width:34%;aspect-ratio:1;border:1px solid rgba(195,217,249,.5);border-radius:50%;box-shadow:0 0 80px rgba(97,148,220,.22); }
+  .feature-art span { position:relative;color:#d6e4fa;font:11px/1.8 "IBM Plex Mono",monospace;letter-spacing:.22em;text-align:center; }
+  .visual-index { position:absolute;top:22px;left:24px;color:#b7c9e6;font:10px "IBM Plex Mono",monospace;letter-spacing:.14em; }
+  .visual-arrow { position:absolute;right:20px;bottom:20px;width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(210,226,249,.3);border-radius:50%;color:#e2edff; }
+  .feature-content { padding:42px clamp(24px,4vw,52px);display:flex;flex-direction:column;justify-content:center; }
+  .feature-meta { display:flex;gap:16px;color:#8193af;font:10px "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase; }
+  .feature-content h2 { margin:22px 0 12px;color:#eff4fc;font-size:clamp(25px,3vw,36px);line-height:1.35;font-weight:500;letter-spacing:-.04em; }
+  .feature-content p { color:#9ba9bf;font-size:14px;line-height:1.95; }
+  .feature-bottom { display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:28px;padding-top:18px;border-top:1px solid rgba(160,184,222,.13);color:#7888a2;font:10px "IBM Plex Mono",monospace; }
+  .read-link { display:inline-flex;align-items:center;gap:10px;color:#b6c9e8; }
+  .empty-feature .feature-art { position:relative;min-height:280px; }
+  .latest-section { padding-top:106px; }
+  .section-heading { display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:28px; }
+  .section-heading .section-kicker { margin-bottom:12px; }
+  .section-heading h2 { margin:0;color:#eef3fb;font-size:clamp(30px,4vw,46px);font-weight:500;letter-spacing:-.055em; }
+  .all-link { color:#a4b5ce; }
+  .story-grid { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px; }
+  .story-card { min-height:310px;position:relative;display:flex;flex-direction:column;padding:22px;border:1px solid rgba(160,184,222,.14);border-radius:6px;background:linear-gradient(145deg,rgba(20,29,45,.82),rgba(12,18,29,.92));transition:transform .3s,border-color .3s,background .3s; }
+  .story-card:hover { transform:translateY(-5px);border-color:rgba(154,188,241,.4);background:linear-gradient(145deg,rgba(28,42,64,.9),rgba(13,20,33,.96)); }
+  .story-top { display:flex;justify-content:space-between;color:#677892;font:10px "IBM Plex Mono",monospace;letter-spacing:.08em; }
+  .story-top span:first-child { color:#9db9e7; }
+  .story-mark { position:absolute;right:22px;top:62px;width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(158,184,225,.17);border-radius:50%;color:#91a8cb; }
+  .story-body { margin-top:auto;padding-top:80px; }
+  .story-category { color:#8eaddd;font:10px "IBM Plex Mono",monospace;letter-spacing:.13em;text-transform:uppercase; }
+  .story-body h3 { margin:12px 0 8px;color:#e9eff9;font-size:20px;font-weight:500;line-height:1.5;letter-spacing:-.025em; }
+  .story-body p { margin:0;color:#8f9db2;font-size:13px;line-height:1.85; }
+  .story-footer { display:flex;justify-content:space-between;gap:10px;margin-top:22px;padding-top:14px;border-top:1px solid rgba(160,184,222,.12);color:#73829a;font:9px "IBM Plex Mono",monospace; }
+  .story-tags { overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+  .quiet-empty { padding:28px 0;border-top:1px solid rgba(160,184,222,.14);color:#8492a8;font-size:13px; }
+  .closing-grid { display:grid;grid-template-columns:1.1fr .9fr;gap:14px;padding-top:100px; }
+  .journal-tile,.project-tile { min-height:310px;position:relative;display:flex;flex-direction:column;justify-content:space-between;padding:28px 30px;border:1px solid rgba(160,184,222,.16);border-radius:7px;overflow:hidden;transition:border-color .3s,transform .3s; }
+  .journal-tile { background:radial-gradient(ellipse at 75% 30%,rgba(75,109,164,.2),transparent 50%),#111a2a; }
+  .project-tile { background:radial-gradient(ellipse at 90% 10%,rgba(105,86,156,.15),transparent 55%),#111725; }
+  .journal-tile:hover,.project-tile:hover { transform:translateY(-4px);border-color:rgba(159,190,240,.42); }
+  .tile-top { justify-content:space-between;color:#8fa2bf; }
+  .journal-symbol { position:absolute;top:64px;right:13%;width:145px;height:145px;border:1px solid rgba(157,189,237,.3);border-radius:50%;display:grid;place-items:center; }
+  .journal-symbol span { font:300 68px "IBM Plex Sans",sans-serif;color:#d6e5fc; }
+  .journal-symbol i { position:absolute;inset:-13px;border:1px solid rgba(157,189,237,.12);border-radius:50%;transform:scaleY(.45) rotate(34deg); }
+  .journal-symbol i:nth-of-type(2) { transform:scaleY(.45) rotate(-34deg); }
+  .journal-symbol i:nth-of-type(3) { inset:20px;border-color:rgba(157,189,237,.2); }
+  .journal-tile h2,.project-tile h2 { margin:0 0 8px;color:#eef3fb;font-size:25px;font-weight:500;letter-spacing:-.04em; }
+  .journal-tile p,.project-tile p { max-width:390px;margin:0;color:#8f9db2;font-size:13px;line-height:1.9; }
+  .project-lines { position:absolute;top:75px;right:30px;width:38%;height:115px;display:flex;align-items:center;gap:8px;opacity:.5; }
+  .project-lines i { flex:1;height:var(--h,60%);border:1px solid rgba(167,181,221,.35);background:linear-gradient(to top,rgba(117,140,199,.14),transparent);transform:skewY(-22deg); }
+  .project-lines i:nth-child(2){--h:90%}.project-lines i:nth-child(3){--h:45%}.project-lines i:nth-child(4){--h:75%}.project-lines i:nth-child(5){--h:58%}
+  .tile-link { margin-top:18px;color:#b6c9e8; }
+  .home-end { display:flex;justify-content:space-between;padding-top:66px;color:#53627a;font:9px "IBM Plex Mono",monospace;letter-spacing:.13em; }
+  .home-end i { color:#8faee0;font-style:normal; }
+  [data-reveal] { opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1); }
+  [data-reveal].is-visible { opacity:1;transform:translateY(0); }
+  .story-card:nth-child(2) { transition-delay:.08s; }.story-card:nth-child(3) { transition-delay:.16s; }
+  @keyframes orbit { from { rotate:0deg; } to { rotate:360deg; } }
+  @media(max-width:900px) { .hero{grid-template-columns:1fr .8fr;gap:20px;min-height:560px}.hero-art{height:360px}.story-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.story-card:last-child{display:none} }
+  @media(max-width:680px) { .hero{min-height:auto;grid-template-columns:1fr;padding-top:72px;padding-bottom:44px;gap:8px}.hero h1{font-size:clamp(54px,15vw,82px);margin-top:24px}.hero-index{margin-top:38px}.hero-art{height:260px;max-width:440px;width:100%;margin:0 auto}.feature-card{grid-template-columns:1fr}.feature-visual{min-height:210px}.feature-visual img{min-height:210px}.feature-content{padding:26px 22px}.latest-section{padding-top:70px}.section-heading{align-items:start}.section-heading h2{font-size:32px}.story-grid{grid-template-columns:1fr}.story-card{min-height:250px}.story-card:last-child{display:flex}.story-body{padding-top:55px}.closing-grid{grid-template-columns:1fr;padding-top:70px}.journal-tile,.project-tile{min-height:280px;padding:24px}.home-end{gap:14px;flex-direction:column;padding-top:44px;font-size:8px} }
+  @media(prefers-reduced-motion:reduce) { .orbit-a,.orbit-b{animation:none} [data-reveal]{opacity:1;transform:none;transition:none} }
+</style>
