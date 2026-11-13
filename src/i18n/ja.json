@@ -114,10 +114,10 @@
   "error.posts": "記事一覧を見る",
   "meta.postsTitle": "OQVETA リリースログ",
   "meta.postsDescription": "OQVETAのリリース情報、機能追加、改善、修正の記録。",
-  "meta.aboutDescription": "{name} が運営する匿名の個人ブログについて。日々の記録や興味のあることを書いています。",
+  "meta.aboutDescription": "OQVETAの運営方針や、リリース情報、サイトの更新内容について。",
   "projects.heroTitle": "制作物",
   "projects.eyebrow": "記録",
   "projects.heading": "制作物",
   "projects.description": "個人的に作ったものや、試していることをまとめています。",
-  "meta.projectsDescription": "{name} の制作物や試み。"
+  "meta.projectsDescription": "OQVETAの機能や今後の取り組みについて。"
 }
