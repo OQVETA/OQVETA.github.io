@@ -2,7 +2,7 @@
   "name": "oqveta",
   "type": "module",
   "version": "1.0.0",
-  "description": "OQVETA — 匿名の個人ブログ",
+  "description": "OQVETA — 匿名運営のリリースブログ",
   "license": "MIT",
   "homepage": "https://oqveta.github.io",
   "repository": {
@@ -10,11 +10,11 @@
     "url": "https://github.com/OQVETA/OQVETA.github.io.git"
   },
   "keywords": [
-    "personal-blog",
+    "release-notes",
+    "changelog",
     "astro",
     "japanese",
-    "reading",
-    "notes",
+    "website-updates",
     "vue",
     "tailwindcss"
   ],
