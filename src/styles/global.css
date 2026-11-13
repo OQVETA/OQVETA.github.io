@@ -23,19 +23,19 @@
   color-scheme: light;
 }
 :root.dark {
-  --bg: #17191c;
-  --card: #1e2125;
-  --surface: #25292e;
-  --text: #dcdfe3;
-  --muted: #9aa1aa;
-  --accent: #8daac7;
-  --accent-strong: #a9c0d7;
-  --accent-soft: #263240;
-  --accent-contrast: #17191c;
-  --line: #2e3238;
-  --line-strong: #3b4048;
+  --bg: #080b12;
+  --card: #101725;
+  --surface: #151f30;
+  --text: #e8eef8;
+  --muted: #9aa9bf;
+  --accent: #9bbcf1;
+  --accent-strong: #bdd3f5;
+  --accent-soft: #172943;
+  --accent-contrast: #080b12;
+  --line: #263247;
+  --line-strong: #3a4c68;
   --shadow: none;
-  --shadow-lg: 0 6px 20px #00000059;
+  --shadow-lg: 0 18px 56px #00000066;
   color-scheme: dark;
 }
 * {
