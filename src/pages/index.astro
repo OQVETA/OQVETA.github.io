@@ -126,13 +126,14 @@ const copy = lang === "ja"
     }
     const root = document.querySelector(".oq-home");
     let frame = 0;
-    root?.addEventListener("pointermove", (event) => {
+    const pointerRoot = document.querySelector<HTMLElement>(".oq-home");
+    pointerRoot?.addEventListener("pointermove", (event: PointerEvent) => {
       if (reduced || event.pointerType === "touch") return;
       if (frame) cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
-        const rect = root.getBoundingClientRect();
-        root.style.setProperty("--pointer-x", `${event.clientX - rect.left}px`);
-        root.style.setProperty("--pointer-y", `${event.clientY - rect.top}px`);
+        const rect = pointerRoot.getBoundingClientRect();
+        pointerRoot.style.setProperty("--pointer-x", `${event.clientX - rect.left}px`);
+        pointerRoot.style.setProperty("--pointer-y", `${event.clientY - rect.top}px`);
       });
     }, { passive: true });
   </script>
