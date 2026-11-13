@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { ogLocales, translate, useTranslations } from "../src/i18n";
 import settings from "../src/site.config.json" with { type: "json" };
 
-const language = "en";
+const language = "ja";
 const t = useTranslations(language);
 
 test("Home categories and URL state after reload", async ({ page }) => {
@@ -30,9 +30,9 @@ test("Home categories and URL state after reload", async ({ page }) => {
 });
 
 test("Tags, month archives, and an unknown category", async ({ page }) => {
-  await page.goto("/posts/?tag=Markdown");
+  await page.goto("/posts/?tag=読書");
   await expect(page.locator(".post-card")).toHaveCount(1);
-  await page.goto("/posts/?month=2026-03");
+  await page.goto("/posts/?month=2026-11");
   await expect(page.locator(".post-card")).toHaveCount(2);
   await expect(page.locator(".filter-summary")).toContainText("2026-03");
   await page.goto("/posts/?category=missing&page=-5");
@@ -56,7 +56,7 @@ test("Search, empty results, and focus restoration", async ({ page }) => {
   await expect(dialog).toBeVisible();
   await page
     .getByRole("searchbox", { name: t("search.keywords") })
-    .fill("signal");
+    .fill("読み終えた");
   await expect(dialog.locator(".search-result")).toHaveCount(1);
   await page
     .getByRole("searchbox", { name: t("search.keywords") })
@@ -71,7 +71,7 @@ test("Search, empty results, and focus restoration", async ({ page }) => {
     .getByRole("searchbox", { name: t("search.keywords") })
     .fill("signal");
   await dialog.locator(".search-result").click();
-  await expect(page).toHaveURL(/a-weekend-in-the-mountains/);
+  await expect(page).toHaveURL(/reading-notes/);
   await expect(page.locator("#article-body")).toBeVisible();
 });
 
@@ -123,7 +123,7 @@ test("Article contents, code blocks, and adjacent posts", async ({
   page,
   isMobile,
 }) => {
-  await page.goto("/posts/writing-with-markdown/");
+  await page.goto("/en/posts/writing-with-markdown/");
   await expect(page.locator(".article-header h1")).toContainText("Markdown");
   await expect(page.locator("#article-body h2")).toHaveCount(6);
   await expect(page.locator("#article-body table")).toHaveCount(1);
@@ -154,7 +154,7 @@ test("Page layouts, assets, and browser errors", async ({ page, isMobile }) => {
     "/posts/",
     "/projects/",
     "/about/",
-    "/posts/writing-with-markdown/",
+    "/posts/reading-notes/",
   ]) {
     const response = await page.goto(path);
     expect(response?.status()).toBe(200);
@@ -227,12 +227,12 @@ test("SEO metadata, official sitemap, and RSS consistency", async ({
   page,
   request,
 }) => {
-  await page.goto("/posts/writing-with-markdown/?tracking=example#article-body");
+  await page.goto("/en/posts/writing-with-markdown/?tracking=example#article-body");
   await expect(page.locator("h1")).toHaveCount(1);
   const canonical = await page
     .locator('link[rel="canonical"]')
     .getAttribute("href");
-  expect(canonical).toMatch(/\/posts\/writing-with-markdown\/$/);
+  expect(canonical).toMatch(/\/en\/posts\/writing-with-markdown\/$/);
   await expect(page.locator('meta[property="og:url"]')).toHaveAttribute(
     "content",
     canonical!,
@@ -255,7 +255,7 @@ test("SEO metadata, official sitemap, and RSS consistency", async ({
       (entry) => entry.textContent!,
     );
   }, xml);
-  expect(locations).toHaveLength(14);
+  expect(locations).toHaveLength(21);
   expect(locations).toContain(canonical);
   expect(
     locations.some((url) => /\/404(?:\/|\.|$)/.test(new URL(url).pathname)),
@@ -351,14 +351,14 @@ test("Configured language, localized search, metadata, and local fonts", async (
     t("site.description"),
   );
   await expect(page.locator("h1")).toHaveText(t("hero.title"));
-  expect(await page.locator("body").innerText()).not.toMatch(/\p{Script=Han}/u);
+  expect(await page.locator("body").innerText()).toMatch(/\p{Script=Han}/u);
 
   await page
     .getByRole("button", { name: t("nav.search"), exact: true })
     .click();
   await page
     .getByRole("searchbox", { name: t("search.keywords") })
-    .fill("emphasis");
+    .fill("読書");
   await expect(page.getByRole("dialog").locator(".search-result")).toHaveCount(
     1,
   );
@@ -397,30 +397,24 @@ test("Configured language, localized search, metadata, and local fonts", async (
   expect(hydrationWarnings).toEqual([]);
 });
 
-test("Spanish routes and the language switch", async ({ page, request }) => {
-  const es = (key: Parameters<typeof t>[0]) => translate("es", key);
+test("English routes and the language switch", async ({ page, request }) => {
+  const en = (key: Parameters<typeof t>[0]) => translate("en", key);
   await page.goto("/posts/welcome/");
   await page.getByRole("link", { name: t("nav.language") }).click();
-  await expect(page).toHaveURL(/\/es\/posts\/welcome\/$/);
-  await expect(page.locator("html")).toHaveAttribute("lang", "es");
-  await expect(page.locator(".article-header h1")).toContainText("Bienvenido");
-  await expect(
-    page.locator('link[rel="alternate"][hreflang="en"]'),
-  ).toHaveAttribute("href", /\/posts\/welcome\/$/);
-  await page.getByRole("link", { name: es("article.back") }).click();
-  await expect(page).toHaveURL(/\/es\/posts\/$/);
-  await expect(page.locator(".post-feed")).toHaveAttribute(
-    "data-ready",
-    "true",
-  );
-  await expect(page.locator(".post-card").first()).toContainText(
-    es("category.guides"),
-  );
-  await page.getByRole("link", { name: es("nav.language") }).click();
+  await expect(page).toHaveURL(/\/en\/posts\/welcome\/$/);
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
-  const feed = await (await request.get("/es/rss.xml")).text();
-  expect(feed).toContain("<language>es</language>");
-  expect(feed).toContain("/es/posts/welcome/");
+  await expect(page.locator(".article-header h1")).toContainText("Welcome");
+  await expect(
+    page.locator('link[rel="alternate"][hreflang="ja"]'),
+  ).toHaveAttribute("href", /\/posts\/welcome\/$/);
+  await page.getByRole("link", { name: en("article.back") }).click();
+  await expect(page).toHaveURL(/\/en\/posts\/$/);
+  await expect(page.locator(".post-feed")).toHaveAttribute("data-ready", "true");
+  await page.getByRole("link", { name: en("nav.language") }).click();
+  await expect(page.locator("html")).toHaveAttribute("lang", "ja");
+  const feed = await (await request.get("/en/rss.xml")).text();
+  expect(feed).toContain("<language>en</language>");
+  expect(feed).toContain("/en/posts/welcome/");
 });
 
 test("Structured data and translated sitemap entries", async ({
@@ -436,18 +430,18 @@ test("Structured data and translated sitemap entries", async ({
   const byType = (type: string) =>
     graph.find((item: { "@type": string }) => item["@type"] === type);
   const post = byType("BlogPosting");
-  expect(post.headline).toContain("Welcome");
-  expect(post.datePublished).toBe("2026-03-15T00:00:00.000Z");
-  expect(post.dateModified).toBe("2026-03-15T00:00:00.000Z");
-  expect(post.inLanguage).toBe("en");
+  expect(post.headline).toContain("はじめまして");
+  expect(post.datePublished).toBe("2026-11-13T00:00:00.000Z");
+  expect(post.dateModified).toBe("2026-11-13T00:00:00.000Z");
+  expect(post.inLanguage).toBe("ja");
   expect(post.image.width).toBe(1200);
   expect(post.author["@id"]).toBe(byType("Person")["@id"]);
-  expect(byType("Person").jobTitle).toBe("Notes & learnings");
+  expect(byType("Person").jobTitle).toBe("匿名の個人ブログ");
   expect(byType("WebSite").alternateName).toBeTruthy();
   expect(byType("BreadcrumbList").itemListElement).toHaveLength(3);
   await expect(
     page.locator('meta[property="og:locale:alternate"]'),
-  ).toHaveAttribute("content", "es_ES");
+  ).toHaveAttribute("content", "en_US");
   await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute(
     "content",
     "summary_large_image",
@@ -465,7 +459,7 @@ test("Structured data and translated sitemap entries", async ({
   const sitemap = await (await request.get("/sitemap-0.xml")).text();
   expect(sitemap).toContain('hreflang="es-ES"');
   expect(sitemap).toContain("/es/posts/welcome/");
-  expect(sitemap).toContain("<lastmod>2026-03-15T00:00:00.000Z</lastmod>");
+  expect(sitemap).toContain("<lastmod>2026-11-13T00:00:00.000Z</lastmod>");
   const feed = await (await request.get("/rss.xml")).text();
   expect(feed).toContain("<content:encoded>");
   expect(feed).toContain('rel="self"');
