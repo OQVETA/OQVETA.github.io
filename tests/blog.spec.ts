@@ -5,15 +5,13 @@ import settings from "../src/site.config.json" with { type: "json" };
 const language = "ja";
 const t = useTranslations(language);
 
-test("Home shows the latest release and category filters work", async ({ page }) => {
+test("Home introduces the journal and highlights the latest story", async ({ page }) => {
   await page.goto("/");
-  await expect(page.locator(".post-feed")).toHaveAttribute("data-ready", "true");
-  await expect(page.locator(".post-card")).toHaveCount(1);
-  await expect(page.locator(".post-card").first()).toContainText("OQVETAを公開しました");
-  await page.getByRole("button", { name: t("category.notes"), exact: true }).click();
-  await expect(page.locator(".post-card")).toHaveCount(1);
-  await page.getByRole("button", { name: t("category.guides"), exact: true }).click();
-  await expect(page.locator(".post-card")).toHaveCount(0);
+  await expect(page.locator(".oq-home")).toBeVisible();
+  await expect(page.locator(".hero h1")).toContainText(t("hero.title"));
+  await expect(page.locator(".feature-card")).toContainText("OQVETAを公開しました");
+  await expect(page.locator(".latest-section")).toBeVisible();
+  await expect(page.locator(".feature-card")).toHaveAttribute("href", /\/posts\//);
 });
 
 test("Release archive, tags, month filter, and empty state", async ({ page }) => {
@@ -52,6 +50,7 @@ test("Release article content and reading progress", async ({ page, isMobile }) 
 });
 
 test("Theme persistence across reloads and pages", async ({ page }) => {
+  await page.addInitScript(() => window.localStorage.setItem("theme", "light"));
   await page.goto("/");
   await page.getByRole("button", { name: t("nav.dark") }).click();
   await expect(page.locator("html")).toHaveClass(/dark/);
@@ -103,7 +102,7 @@ test("SEO metadata and RSS consistency", async ({ page, request }) => {
 test("Japanese default language, metadata, and modern font stack", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("lang", language);
-  await expect(page).toHaveTitle(`${settings.site.name} · ${t("site.titleSuffix")}`);
+  await expect(page).toHaveTitle(`${t("nav.home")} · ${settings.site.name}`);
   await expect(page.locator('meta[property="og:locale"]')).toHaveAttribute("content", ogLocales[language]);
   await expect(page.locator("h1")).toHaveText(t("hero.title"));
   const family = await page.locator("body").evaluate((el) => getComputedStyle(el).fontFamily);

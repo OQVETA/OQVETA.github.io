@@ -21,10 +21,7 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
       await expect(
         page.getByRole("button", { name: t("nav.dark") }),
       ).toBeVisible();
-      await expect(page.locator(".post-feed")).toHaveAttribute(
-        "data-ready",
-        "true",
-      );
+      await expect(page.locator(".main-container")).toBeVisible();
 
       // Exercise both the transparent header and its themed, scrolled surface.
       for (const scrolled of [false, true]) {
