@@ -50,7 +50,12 @@ test("Release article content and reading progress", async ({ page, isMobile }) 
 });
 
 test("Theme persistence across reloads and pages", async ({ page }) => {
-  await page.addInitScript(() => window.localStorage.setItem("theme", "light"));
+  await page.addInitScript(() => {
+    if (window.sessionStorage.getItem("oqveta-theme-test-seeded") !== "1") {
+      window.localStorage.setItem("theme", "light");
+      window.sessionStorage.setItem("oqveta-theme-test-seeded", "1");
+    }
+  });
   await page.goto("/");
   await page.getByRole("button", { name: t("nav.dark") }).click();
   await expect(page.locator("html")).toHaveClass(/dark/);
