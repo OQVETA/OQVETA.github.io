@@ -10,6 +10,11 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
       isMobile,
     }) => {
       await page.emulateMedia({ colorScheme: "light", reducedMotion });
+      // The site intentionally defaults to dark; isolate this toggle test by
+      // starting from light so the accessible action label is deterministic.
+      await page.addInitScript(() => {
+        window.localStorage.setItem("theme", "light");
+      });
       await page.goto(path);
       // Guarantee enough height to reach the scrolled header state.
       await page.addStyleTag({ content: "body { min-height: 300vh; }" });
