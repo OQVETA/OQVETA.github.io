@@ -109,7 +109,7 @@ test("Japanese default language, metadata, and modern font stack", async ({ page
   await expect(page.locator("html")).toHaveAttribute("lang", language);
   await expect(page).toHaveTitle(`${t("nav.home")} · ${settings.site.name}`);
   await expect(page.locator('meta[property="og:locale"]')).toHaveAttribute("content", ogLocales[language]);
-  await expect(page.locator("h1")).toHaveText(t("hero.title"));
+  await expect(page.locator("h1")).toHaveText(`${t("hero.title")}.`);
   const family = await page.locator("body").evaluate((el) => getComputedStyle(el).fontFamily);
   expect(family).toContain("Noto Sans JP");
   await page.goto("/posts/2026-11-13-launch/");
